@@ -20,9 +20,9 @@ day_case = pd.DataFrame(df['DateRepConf'])
 day_case = pd.DataFrame(day_case.groupby('DateRepConf')['DateRepConf'].count().reset_index(name='Confirmed'))
 df_removed = df[df['RemovalType'].notna()]
 df_removed = df_removed[['RemovalType', 'DateRepRem']]
-df_removed = pd.DataFrame(df_removed.groupby(['DateRepRem','RemovalType']).size().reset_index(name='count'))
-df_deaths = df_removed[df_removed['RemovalType'] == 'Died'].drop(columns='RemovalType').rename(columns= {'count':'Death'})
-df_recovered = df_removed[df_removed['RemovalType'] == 'Recovered'].drop(columns='RemovalType').rename(columns= {'count':'Recovered'})
+df_removed = pd.DataFrame(df_removed.groupby(['DateRepRem', 'RemovalType']).size().reset_index(name='count'))
+df_deaths = df_removed[df_removed['RemovalType'] == 'Died'].drop(columns='RemovalType').rename(columns={'count': 'Death'})
+df_recovered = df_removed[df_removed['RemovalType'] == 'Recovered'].drop(columns='RemovalType').rename(columns={'count': 'Recovered'})
 del df_removed
 cases_time_series = pd.merge(day_case, df_deaths, how='left', left_on='DateRepConf', right_on='DateRepRem')
 cases_time_series = pd.merge(cases_time_series, df_recovered, how='left', left_on='DateRepConf', right_on='DateRepRem')
@@ -34,12 +34,12 @@ max_bars = cases_time_series.nlargest(n, ['Confirmed'])
 # plot the number of cases per day
 fig = plt.figure(figsize=(10, 4))
 ax = plt.axes()
-ax.set_facecolor('#F4EEFF')
+ax.set_facecolor('#F0EFE7')  # was F4EEFF
 plt.title('CoVid-19 Cases in the Philippines')
 plt.fill_between(cases_time_series.index.date, cases_time_series['Confirmed'].cumsum(),
                  (cases_time_series['Confirmed'].cumsum()-(cases_time_series['Death'].cumsum()+cases_time_series['Recovered'].cumsum())),
-                 label= 'Confirmed',
-                 color= '#000839')
+                 label='Confirmed',
+                 color='#f9ad6a')  # was 000839
 plt.annotate('%0.f' % cases_time_series['Confirmed'].cumsum()[-1],
              xy=(1, cases_time_series['Confirmed'].cumsum()[-1]),
              xytext=(1, 0),
@@ -47,20 +47,20 @@ plt.annotate('%0.f' % cases_time_series['Confirmed'].cumsum()[-1],
 plt.fill_between(cases_time_series.index.date,
                  (cases_time_series['Confirmed'].cumsum() -
                   (cases_time_series['Death'].cumsum() + cases_time_series['Recovered'].cumsum())), 0,
-                 label= 'Active',
-                 color= '#005082')
+                 label='Active',
+                 color='#f9e07f')
 plt.annotate('%0.f' % (cases_time_series['Confirmed'].cumsum()-(cases_time_series['Death'].cumsum()+cases_time_series['Recovered'].cumsum()))[-1],
              xy=(1, (cases_time_series['Confirmed'].cumsum()-(cases_time_series['Death'].cumsum()+cases_time_series['Recovered'].cumsum()))[-1]),
              xytext=(1, 0),
              xycoords=('axes fraction', 'data'), textcoords='offset points', fontsize= 7)
 ax.bar(cases_time_series.index.date, cases_time_series['Confirmed'],
        label='Cases per Day',
-       color='#FFA41B')
+       color='#d46c4e')
 for i in range(n):
     plt.annotate('%0.f' % max_bars['Confirmed'][i],
                  xy=(max_bars.index[i], max_bars['Confirmed'][i]),
                  xytext=(-6.5,1),
-                 xycoords=('data', 'data'), textcoords='offset points', fontsize=7, color='#FFFFFF')
+                 xycoords=('data', 'data'), textcoords='offset points', fontsize=7, color='#000000')
 plt.xlim(cases_time_series.index[12],cases_time_series.index[-1])
 plt.xticks([cases_time_series.index[20], cases_time_series.index[-1]])
 plt.ylim(0,np.ceil((cases_time_series['Confirmed'].cumsum()[-1])/1000)*1000)
@@ -84,11 +84,10 @@ plt.legend(loc='upper center',
 fig2 = plt.figure(figsize=(10,4))
 ax = plt.axes()
 plt.title('Confirmed Cases per Day')
-ax.set_facecolor('#F4EEFF')
+ax.set_facecolor('#F0EFE7')
 
 ax.bar(cases_time_series.index.date, cases_time_series['Confirmed'],
-              # label= 'Cases per Day',
-              color='#37AB85')
+              color='#43978d')  # was 37AB85
 for i in range(n):
     plt.annotate('%0.f' % max_bars['Confirmed'][i],
                  xy=(max_bars.index[i], max_bars['Confirmed'][i]),
@@ -96,9 +95,9 @@ for i in range(n):
                  xycoords=('data', 'data'), textcoords='offset points', fontsize=7)
 
 plt.plot(cases_time_series.index.date, cases_time_series['Confirmed'].rolling(window= 7).mean(),
-         linewidth= 2,
-         label= '7-Day Moving Average',
-         color= '#FFB052')
+         linewidth=2,
+         label='7-Day Moving Average',
+         color='#d46c4e')  # was FFB052
 plt.plot(cases_time_series.index.date, cases_time_series['Death'].cumsum(),
          linestyle= 'dotted',
          linewidth= 1,
@@ -109,10 +108,10 @@ plt.annotate('%0.f' % cases_time_series['Death'].cumsum()[-1],
              xytext=(-6.5, 1),
              xycoords=('data', 'data'), textcoords='offset points', fontsize= 7)
 plt.plot(cases_time_series.index.date, cases_time_series['Recovered'].cumsum(),
-         linestyle= '--',
-         linewidth= 1,
-         color= '#000000',
-         label= 'Recoveries')
+         linestyle='--',
+         linewidth=1,
+         color='#000000',
+         label='Recoveries')
 plt.annotate('%0.f' % cases_time_series['Recovered'].cumsum()[-1],
              xy=(cases_time_series.index[-1], cases_time_series['Recovered'].cumsum()[-1]),
              xytext=(-6.5, 1),
@@ -188,7 +187,7 @@ del[df_deaths, df_recovered, idx, target_row]
 # fig4 = plt.figure(figsize=(12, 5))
 # ax_count = plt.axes()
 # plt.title('CoVid-19 Cases per Age')
-# ax_count.set_facecolor('#F4EEFF')
+# ax_count.set_facecolor('#F0EFE7')
 #
 # ax_count.bar(case_age.index, case_age['Confirmed'],
 #          label='Confirmed')
@@ -218,11 +217,11 @@ case_ages_labels = ['0+', '10s', '20s', '30s', '40s', '50s', '60s', '70s', '80+'
 fig3 = plt.figure(figsize=(10, 4))
 ax_count = plt.axes()
 plt.title('CoVid-19 Cases per Age')
-ax_count.set_facecolor('#F4EEFF')
+ax_count.set_facecolor('#F0EFE7')
 
 ax_count.bar(case_age_dec.index, case_age_dec['Confirmed'],
              label='Confirmed',
-             color='#2AB77B')
+             color='#43978d')
 
 for i in range(len(case_age_dec)):
     ax_count.annotate('%0.f' % case_age_dec['Confirmed'][i],
@@ -239,11 +238,11 @@ ax_percent = ax_count.twinx()
 ax_percent.plot(case_age_dec.index, (case_age_dec['Death']/case_age_dec['Death'].sum())*100,
                 marker='o',
                 label='Death',
-                color='#FFCF6E')
+                color='#d46c4e')
 ax_percent.plot(case_age_dec.index, (case_age_dec['Recovered']/case_age_dec['Recovered'].sum())*100,
                 marker='o',
                 label='Recovered',
-                color='#DF60A7')
+                color='#264d59')
 ax_percent.set_xticks(case_age_dec.index)
 ax_percent.set_xticklabels(case_ages_labels)
 ax_percent.set_ylim(0, 50)
@@ -260,12 +259,12 @@ del(ax_percent, ax_count)
 fig4 = plt.figure(figsize=(6, 4))
 ax = plt.axes()
 plt.title('Resolved Cases per Age')
-ax.set_facecolor('#F4EEFF')
+ax.set_facecolor('#F0EFE7')
 
 div_line = (case_age_dec['Death']/(case_age_dec['Death'] + case_age_dec['Recovered']) * 100)
 ax.plot(case_age_dec.index, div_line, color='#000000')
-ax.fill_between(case_age_dec.index, 100, div_line, alpha=0.4)
-ax.fill_between(case_age_dec.index, div_line, 0, alpha=0.4)
+ax.fill_between(case_age_dec.index, 100, div_line, alpha=0.4, color='#264d59')
+ax.fill_between(case_age_dec.index, div_line, 0, alpha=0.4, color='#d46c4e')
 ax.set_ylim(0, 100)
 ax.set_xticklabels(case_ages_labels, rotation='45')
 ax.set_xticks(case_age_dec.index)
@@ -290,7 +289,7 @@ daily_age_chart['50s'] = daily_age[['50 to 54', '55 to 59']].sum(axis=1)
 fig5 = plt.figure(figsize=(10, 4))
 ax = plt.axes()
 plt.title('Daily Cases per Age Group')
-ax.set_facecolor('#F4EEFF')
+ax.set_facecolor('#F0EFE7')
 
 ax.plot(daily_age_chart.index.date, daily_age_chart.cumsum())
 ax.set_xlim(pd.Timestamp('2020-03-01'), daily_age_chart.index[-1])
@@ -322,10 +321,10 @@ def get_new_labels(sizes, labels):
     return new_labels
 
 
-plt.close('all')
+# plt.close('all')
 fig6, (ax25, ax50) = plt.subplots(1, 2, subplot_kw={'aspect': 'equal'}, figsize=(10, 4))
 fig6.suptitle('Health Status for Age Groups 25 to 34 and 50s')
-ax25.set_facecolor('#F4EEFF')
+ax25.set_facecolor('#F0EFE7')
 
 ax25.pie(case_25to34, autopct=my_autopct,
          labels=get_new_labels(case_25to34, case_25to34.index))
@@ -361,7 +360,7 @@ def regress_line_time(y):
     y_pred = linear_regressor.predict(x)  # make predictions
     return y_pred
 
-plt.close('all')
+# plt.close('all')
 fig7 = plt.figure(figsize=(10, 4))
 ax_unique = plt.axes()
 plt.title('Unique People Tested per day')
