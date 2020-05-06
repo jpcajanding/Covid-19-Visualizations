@@ -351,7 +351,7 @@ for column in columns:
 # df = df.apply(pd.to_numeric, errors='ignore', downcast='float')
 test_dates = df.groupby(['Date']).sum() #.reset_index()
 test_daily = (test_dates - test_dates.shift(1))[1:]
-
+test_annotations = test_daily.nlargest(3,['UNIQUE INDIVIDUALS TESTED']).append(test_daily.tail(2)).append(test_daily.nsmallest(2,['UNIQUE INDIVIDUALS TESTED']))
 
 def regress_line_time(y):
     x = np.arange(len(y)).reshape(-1, 1)
@@ -360,13 +360,19 @@ def regress_line_time(y):
     y_pred = linear_regressor.predict(x)  # make predictions
     return y_pred
 
-# plt.close('all')
+plt.close('all')
 fig7 = plt.figure(figsize=(10, 4))
 ax_unique = plt.axes()
 plt.title('Unique People Tested per day')
 ax_unique.set_facecolor('#F0EFE7')
 
 ax_unique.plot(test_daily.index, test_daily['UNIQUE INDIVIDUALS TESTED'], color='#264d59')
+for i in range(len(test_annotations)):
+    ax_unique.annotate('%0.f' % test_annotations['UNIQUE INDIVIDUALS TESTED'][i], 
+                        xy=(test_annotations.index[i], test_annotations['UNIQUE INDIVIDUALS TESTED'][i]),
+                        xytext=(3.5, -1),
+                        xycoords=('data', 'data'), textcoords='offset points', fontsize=7)
+
 regress_line = regress_line_time(test_daily['UNIQUE INDIVIDUALS TESTED'].values.reshape(-1, 1))
 ax_unique.plot(test_daily.index, regress_line, color='#d46c4e')
 ax_unique.xaxis.set_major_formatter(mpl_dates.DateFormatter('%b %d'))  # format dates as Month-Day eg Mar 01
