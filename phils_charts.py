@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 
 # read data from pre-stored csv
-df = pd.read_csv('datafiles\doh\DOH COVID Data Drop_ 20200504 - 05 Case Information.csv',
+df = pd.read_csv('datafiles\doh\DOH COVID Data Drop_ 20200505 - 05 Case Information.csv',
                  parse_dates=['DateRepConf', 'DateRecover', 'DateDied', 'DateRepRem'])
 
 print(df.notna().sum())
@@ -335,7 +335,7 @@ ax50.text(0.5, 0, "50s", size=10, ha="center",  transform=ax50.transAxes)
 # plt.show()
 del(case_25to34, case_50s)
 
-df = pd.read_csv('datafiles\doh\DOH COVID Data Drop_ 20200504 - 08 Testing Aggregates.csv',
+df = pd.read_csv('datafiles\doh\DOH COVID Data Drop_ 20200505 - 08 Testing Aggregates.csv',
                  parse_dates=['Date'], thousands=',')
 
 print(df.notna().sum())
@@ -375,4 +375,5 @@ ax_unique.set_ylim(0, 8500)
 ax_unique.set_yticks([0, 4000, 8000])
 ax_unique.grid(axis='y', color='#dcd6cd', linestyle='dotted', linewidth=1)
 plt.show()
+
 
