@@ -5,7 +5,7 @@ import pandas as pd
 
 from covid_load_data import load_data
 
-update = True
+update = False
 confirmed = load_data('confirmed', update= update)
 deaths = load_data('deaths', update= update)
 recovered = load_data('recovered', update= update)
